@@ -9,7 +9,7 @@ from core.models import Recipe
 
 from recipe.serializers import RecipeSerializer
 
-RECIPES_URL = reverse('recipe-list')
+RECIPES_URL = reverse('recipe:recipe-list')
 
 
 def sample_recipe(user, **params):
@@ -43,12 +43,12 @@ class PrivateRecipeApiTests(TestCase):
     def setUp(self):
         self.client = APIClient()
 
-        self.user = get_user_model(
+        self.user = get_user_model().objects.create_user(
             'testuser@gmail.com',
             'testpass'
         )
 
-        self.client.force_authenticate(user=user)
+        self.client.force_authenticate(user=self.user)
 
     def test_retrieve_recipe(self):
         """Test retrieving of recipe"""
@@ -64,7 +64,7 @@ class PrivateRecipeApiTests(TestCase):
 
     def test_recipe_limited_to_user(self):
         """Test retrieving recipes for a user"""
-        user2 = get_user_model(
+        user2 = get_user_model().objects.create_user(
             'testuser2@gmail.com',
             'passsing'
         )
